@@ -1,0 +1,22 @@
+version: '3'
+services:
+  phpservermon-dkr:
+    image: phpservermon
+    container_name: phpservermon-dkr
+    restart: always
+    build:
+      context: ./
+      dockerfile: docker/Dockerfile
+    env_file:
+      - .env
+    volumes:
+      - ./:/var/www/:rw
+    ports:
+      - 8089:80
+    expose:
+      - 8089
+
+networks:
+  default:
+    external:
+      name: webproxy
