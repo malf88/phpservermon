@@ -77,8 +77,11 @@ ENV COMPOSER_ALLOW_SUPERUSER 1
 COPY --from=composer /var/www/vendor /var/www/vendor
 # Expose apache.
 EXPOSE 80
+COPY ./docker/cron.sh /usr/local/bin/start
+
+RUN chmod u+x /usr/local/bin/start
 
 ADD ./docker/000-default.conf /etc/apache2/sites-enabled/000-default.conf
 
-
+CMD ["/usr/local/bin/start"]
 # By default start up apache in the foreground, override with /bin/bash for interative.
