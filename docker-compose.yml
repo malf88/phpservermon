@@ -15,7 +15,15 @@ services:
       - 8089:80
     expose:
       - 8089
-
+  phpservermon-scheduler-dkr:
+    image: phpservermon
+    container_name: phpservermon-scheduler-dkr
+    depends_on:
+      - phpservermon-dkr
+    volumes:
+      - .:/var/www/
+    environment:
+      CONTAINER_ROLE: scheduler
 networks:
   default:
     external:
