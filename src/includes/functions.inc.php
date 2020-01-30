@@ -583,7 +583,10 @@ namespace {
         $phpmailer = new \PHPMailer\PHPMailer\PHPMailer();
         $phpmailer->Encoding = "base64";
         $phpmailer->CharSet = 'UTF-8';
-        $phpmailer->SMTPDebug = 0;
+        if (!defined('PSM_SMTP_DEBUG')) {
+            define('PSM_SMTP_DEBUG', false);
+        }
+        $phpmailer->SMTPDebug = PSM_SMTP_DEBUG;
 
         if (psm_get_conf('email_smtp') == '1') {
             $phpmailer->IsSMTP();
