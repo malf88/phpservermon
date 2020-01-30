@@ -1,0 +1,29 @@
+[Wed Jan 29 21:30:48.954797 2020] [mpm_prefork:notice] [pid 1] AH00163: Apache/2.4.38 (Debian) PHP/7.2.25 configured -- resuming normal operations
+[Wed Jan 29 21:30:48.955828 2020] [core:notice] [pid 1] AH00094: Command line: 'apache2 -D FOREGROUND'
+[Wed Jan 29 21:44:44.746411 2020] [php7:notice] [pid 21] [client 172.19.0.1:42674] PHP Fatal error:  No dependencies found in vendor dir. Did you install the dependencies?\n                Please run "php composer.phar install". in /var/www/src/bootstrap.php on line 73
+[Wed Jan 29 21:44:44.749335 2020] [php7:notice] [pid 21] [client 172.19.0.1:42674] PHP Stack trace:
+[Wed Jan 29 21:44:44.750978 2020] [php7:notice] [pid 21] [client 172.19.0.1:42674] PHP   1. {main}() /var/www/index.php:0
+[Wed Jan 29 21:44:44.751866 2020] [php7:notice] [pid 21] [client 172.19.0.1:42674] PHP   2. require() /var/www/index.php:29
+[Wed Jan 29 21:44:44.752716 2020] [php7:notice] [pid 21] [client 172.19.0.1:42674] PHP   3. trigger_error() /var/www/src/bootstrap.php:73
+[Wed Jan 29 21:45:05.124162 2020] [mpm_prefork:notice] [pid 1] AH00170: caught SIGWINCH, shutting down gracefully
+[Wed Jan 29 21:49:00.533113 2020] [mpm_prefork:notice] [pid 1] AH00163: Apache/2.4.38 (Debian) PHP/7.2.25 configured -- resuming normal operations
+[Wed Jan 29 21:49:00.534393 2020] [core:notice] [pid 1] AH00094: Command line: 'apache2 -D FOREGROUND'
+[Wed Jan 29 21:50:45.783240 2020] [core:notice] [pid 1] AH00052: child pid 28 exit signal Interrupt (2)
+[Wed Jan 29 21:54:15.446034 2020] [core:notice] [pid 1] AH00052: child pid 57 exit signal Interrupt (2)
+[Wed Jan 29 21:56:09.060954 2020] [mpm_prefork:notice] [pid 1] AH00170: caught SIGWINCH, shutting down gracefully
+[Wed Jan 29 22:07:35.920524 2020] [mpm_prefork:notice] [pid 1] AH00163: Apache/2.4.38 (Debian) PHP/7.2.25 configured -- resuming normal operations
+[Wed Jan 29 22:07:35.922166 2020] [core:notice] [pid 1] AH00094: Command line: 'apache2 -D FOREGROUND'
+[Wed Jan 29 22:12:02.717260 2020] [mpm_prefork:notice] [pid 1] AH00170: caught SIGWINCH, shutting down gracefully
+[Wed Jan 29 22:26:01.219671 2020] [mpm_prefork:notice] [pid 1] AH00163: Apache/2.4.38 (Debian) PHP/7.2.25 configured -- resuming normal operations
+[Wed Jan 29 22:26:01.220755 2020] [core:notice] [pid 1] AH00094: Command line: 'apache2 -D FOREGROUND'
+[Thu Jan 30 00:03:46.966454 2020] [mpm_prefork:notice] [pid 1] AH00170: caught SIGWINCH, shutting down gracefully
+[Thu Jan 30 00:33:42.877272 2020] [mpm_prefork:notice] [pid 1] AH00163: Apache/2.4.38 (Debian) PHP/7.2.25 configured -- resuming normal operations
+[Thu Jan 30 00:33:42.878842 2020] [core:notice] [pid 1] AH00094: Command line: 'apache2 -D FOREGROUND'
+[Thu Jan 30 00:36:22.651363 2020] [php7:notice] [pid 16] [client 172.19.0.1:43592] PHP Fatal error:  No dependencies found in vendor dir. Did you install the dependencies?\n                Please run "php composer.phar install". in /var/www/src/bootstrap.php on line 73
+[Thu Jan 30 00:36:22.652462 2020] [php7:notice] [pid 16] [client 172.19.0.1:43592] PHP Stack trace:
+[Thu Jan 30 00:36:22.653003 2020] [php7:notice] [pid 16] [client 172.19.0.1:43592] PHP   1. {main}() /var/www/index.php:0
+[Thu Jan 30 00:36:22.653433 2020] [php7:notice] [pid 16] [client 172.19.0.1:43592] PHP   2. require() /var/www/index.php:29
+[Thu Jan 30 00:36:22.654026 2020] [php7:notice] [pid 16] [client 172.19.0.1:43592] PHP   3. trigger_error() /var/www/src/bootstrap.php:73
+[Thu Jan 30 00:38:26.671659 2020] [mpm_prefork:notice] [pid 1] AH00170: caught SIGWINCH, shutting down gracefully
+[Thu Jan 30 00:54:05.125550 2020] [mpm_prefork:notice] [pid 1] AH00163: Apache/2.4.38 (Debian) PHP/7.2.25 configured -- resuming normal operations
+[Thu Jan 30 00:54:05.127422 2020] [core:notice] [pid 1] AH00094: Command line: 'apache2 -D FOREGROUND'

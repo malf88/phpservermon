@@ -87,6 +87,7 @@ Requirements
 Install
 -------
 
+Rename .env.example file for .env
 Please see docs/install.rst.
 In a nutshell: unzip, upload, run install.php, enjoy.
 
