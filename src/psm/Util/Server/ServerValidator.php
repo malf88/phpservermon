@@ -22,7 +22,7 @@
  * @author      Pepijn Over <pep@mailbox.org>
  * @copyright   Copyright (c) 2008-2017 Pepijn Over <pep@mailbox.org>
  * @license     http://www.gnu.org/licenses/gpl.txt GNU GPL v3
- * @version     Release: @package_version@
+ * @version     Release: v3.5.0
  * @link        http://www.phpservermonitor.org/
  * @since       phpservermon 3.1.0
  **/
@@ -151,6 +151,20 @@ class ServerValidator
     {
         if (!is_numeric($value) || intval($value) == 0) {
             throw new \InvalidArgumentException('server_warning_threshold_invalid');
+        }
+        return true;
+    }
+
+    /**
+     * Check SSL expiry days
+     * @param int $value
+     * @return boolean
+     * @throws \InvalidArgumentException
+     */
+    public function sslCertExpiryDays($value)
+    {
+        if (!is_numeric($value) || $value < 0) {
+            throw new \InvalidArgumentException('server_ssl_cert_expiry_days');
         }
         return true;
     }

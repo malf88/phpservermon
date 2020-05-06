@@ -22,7 +22,7 @@
  * @author      Axel Wehner <mail@axelwehner.de>
  * @copyright   Copyright (c) 2008-2017 Pepijn Over <pep@mailbox.org>
  * @license     http://www.gnu.org/licenses/gpl.txt GNU GPL v3
- * @version     Release: @package_version@
+ * @version     Release: v3.5.0
  * @link        http://www.phpservermonitor.org/
  * @since       phpservermon 3.2.1
  **/
@@ -131,7 +131,7 @@ class CMBulkSMS extends Core
                 ),
                 'msg' => array(
                     array(
-                        'from' => substr($this->originator, 0, 11),
+                        'from' => substr($this->originator, 0, 15),
                         'to' => $recipients,
                         'body' => array(
                             'content' => $message
@@ -172,7 +172,7 @@ class CMBulkSMS extends Core
         $msg = $xml->addChild('MSG');
 
         // From
-        $msg->addChild('FROM', substr($this->originator, 0, 11));
+        $msg->addChild('FROM', substr($this->originator, 0, 15));
 
         // Recipients
         foreach ($this->recipients as $recipient) {

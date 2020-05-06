@@ -23,7 +23,7 @@
  * @author      Tim Zandbergen <Tim@Xervion.nl>
  * @copyright   Copyright (c) 2008-2017 Pepijn Over <pep@mailbox.org>
  * @license     http://www.gnu.org/licenses/gpl.txt GNU GPL v3
- * @version     Release: @package_version@
+ * @version     Release: v3.5.0
  * @link        http://www.phpservermonitor.org/
  * @since       phpservermon 3.3.0
  **/
@@ -66,7 +66,7 @@ class SolutionsInfini extends Core
                     "api_key" => $this->password,
                     "method" => "sms",
                     "to" => $recipients,
-                    "sender" => substr($this->originator, 0, 11),
+                    "sender" => substr($this->originator, 0, 15),
                     "message" => $message,
                 )
         ));

@@ -22,7 +22,7 @@
  * @author      Pepijn Over <pep@mailbox.org>
  * @copyright   Copyright (c) 2008-2017 Pepijn Over <pep@mailbox.org>
  * @license     http://www.gnu.org/licenses/gpl.txt GNU GPL v3
- * @version     Release: @package_version@
+ * @version     Release: v3.5.0
  * @link        http://www.phpservermonitor.org/
  * @since       phpservermon 3.0.0
  **/
@@ -49,9 +49,14 @@ class UpdateManager implements ContainerAwareInterface
      * Go :-)
      *
      * @param boolean $skip_perms if TRUE, no user permissions will be taken in account and all servers will be updated
+     * @param string|null $status If all servers (null), or just `on` or `off` should be checked.
      */
-    public function run($skip_perms = false)
+    public function run($skip_perms = false, $status = null)
     {
+    	if (false === in_array($status, ['on', 'off'], true)) {
+    		$status = null;
+	    }
+
         // check if we need to restrict the servers to a certain user
         $sql_join = '';
 
@@ -64,10 +69,11 @@ class UpdateManager implements ContainerAwareInterface
         }
 
         $sql = "SELECT `s`.`server_id`,`s`.`ip`,`s`.`port`,`s`.`label`,`s`.`type`,`s`.`pattern`,`s`.`header_name`,
-            `s`.`header_value`,`s`.`status`,`s`.`active`,`s`.`email`,`s`.`sms`,`s`.`pushover`,`s`.`telegram`
+            `s`.`header_value`,`s`.`status`,`s`.`active`,`s`.`email`,`s`.`sms`,`s`.`pushover`,`s`.`telegram`, 
+            `s`.`jabber`
 				FROM `" . PSM_DB_PREFIX . "servers` AS `s`
 				{$sql_join}
-				WHERE `active`='yes' ";
+				WHERE `active`='yes' " . ($status !== null ? ' AND `status` = \'' . $status . '\'' : '');
 
         $servers = $this->container->get('db')->query($sql);
 
@@ -76,7 +82,8 @@ class UpdateManager implements ContainerAwareInterface
 
         foreach ($servers as $server) {
             $status_old = ($server['status'] == 'on') ? true : false;
-            $status_new = $updater->update($server['server_id']);
+            $status_new = $updater->
+            update($server['server_id']);
             // notify the nerds if applicable
             $notifier->notify($server['server_id'], $status_old, $status_new);
             // clean-up time!! archive all records

@@ -22,7 +22,7 @@
  * @author      manhere <https://github.com/manhere>
  * @copyright   Copyright (c) 2008-2017 Pepijn Over <pep@mailbox.org>
  * @license     http://www.gnu.org/licenses/gpl.txt GNU GPL v3
- * @version     Release: @package_version@
+ * @version     Release: v3.5.0
  * @link        http://www.phpservermonitor.org/
  **/
 
@@ -124,9 +124,6 @@ $sm_lang = array(
         'sms' => '短信',
         'pushover' => 'Pushover',
         'no_logs' => '没有日志',
-        'clear' => 'Clear log',
-        'delete_title' => 'Delete log',
-        'delete_message' => 'Are you sure you want to delete <b>all</b> logs?',
     ),
     'servers' => array(
         'server' => '业务',

@@ -22,7 +22,7 @@
  * @author      andlil
  * @copyright   Copyright (c) 2008-2017 Pepijn Over <pep@mailbox.org>
  * @license     http://www.gnu.org/licenses/gpl.txt GNU GPL v3
- * @version     Release: @package_version@
+ * @version     Release: v3.5.0
  * @link        http://www.phpservermonitor.org/
  **/
 
@@ -94,7 +94,7 @@ $sm_lang = array(
         'email' => 'Email',
         'pushover' => 'Pushover',
         'pushover_description' => 'Pushover är en tjänst som skickar meddelande i realtid. Se <a
- href="https://pushover.net/">deras webbsida</a> för mer information.',
+ href="https://pushover.net/" target="_blank">deras webbsida</a> för mer information.',
         'pushover_key' => 'Pushover Key',
         'pushover_device' => 'Pushover Device',
         'pushover_device_description' => 'Enhetsnman att skicka meddelande till. Lämna tomt för att skicka till alla
@@ -210,7 +210,7 @@ $sm_lang = array(
         'sms_from' => 'Avsändarens telefonnummer',
         'pushover_status' => 'Tillåt Pushover-meddelande',
         'pushover_description' => 'Pushover är en tjänst som skickar meddelande i realtid. Se <a
- href="https://pushover.net/">deras webbsida</a> för mer info.',
+ href="https://pushover.net/" target="_blank">deras webbsida</a> för mer info.',
         'pushover_clone_app' => 'Klicka här för att skapa din Pushover app',
         'pushover_api_token' => 'Pushover App API Token',
         'pushover_api_token_description' => 'Innan du kan använda Pushover behöver du <a href="%1$s" target="_blank"

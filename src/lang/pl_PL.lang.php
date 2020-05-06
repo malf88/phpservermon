@@ -22,7 +22,7 @@
  * @author      Arkadiusz Klenczar <a.klenczar@gmail.com>
  * @copyright   Copyright (c) 2008-2017 Pepijn Over <pep@mailbox.org>
  * @license     http://www.gnu.org/licenses/gpl.txt GNU GPL v3
- * @version     Release: @package_version@
+ * @version     Release: v3.5.0
  * @link        http://www.phpservermonitor.org/
  **/
 
@@ -95,7 +95,7 @@ $sm_lang = array(
         'email' => 'Email',
         'pushover' => 'Pushover',
         'pushover_description' => 'Pushover jest usługą szybkich notyfikacji. Sprawdź <a
- href="https://pushover.net/">ich stronę</a> po więcej informacji.',
+ href="https://pushover.net/" target="_blank">ich stronę</a> po więcej informacji.',
         'pushover_key' => 'Pushover Key',
         'pushover_device' => 'Urządzenie dla Pushover',
         'pushover_device_description' => 'Nazwa urządzenia do którego wysłać powiadomienie. Pozostaw puste aby
@@ -211,7 +211,7 @@ $sm_lang = array(
         'sms_from' => 'Numer nadawcy',
         'pushover_status' => 'Pozwól na wysyłkę notyfikacji Pushover',
         'pushover_description' => 'Pushover jest usługą ułatwiającą otrzymywanie powiadomień w czasie
- rzeczywistym. Sprawdź <a href="https://pushover.net/">ich stronę</a> aby uzyskać
+ rzeczywistym. Sprawdź <a href="https://pushover.net/" target="_blank">ich stronę</a> aby uzyskać
  więcej informacji.',
         'pushover_clone_app' => 'Kliknij tutaj aby stworzyć aplikację korzystającą z Pushover',
         'pushover_api_token' => 'Pushover App API Token',

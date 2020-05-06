@@ -22,7 +22,7 @@
  * @author      Pepijn Over <pep@mailbox.org>
  * @copyright   Copyright (c) 2008-2017 Pepijn Over <pep@mailbox.org>
  * @license     http://www.gnu.org/licenses/gpl.txt GNU GPL v3
- * @version     Release: @package_version@
+ * @version     Release: v3.5.0
  * @link        http://www.phpservermonitor.org/
  **/
 
@@ -161,6 +161,7 @@ class UserController extends AbstractController
             'pushover_key',
             'pushover_device',
             'telegram_id',
+            'jabber',
             'email'
         );
 
@@ -257,6 +258,7 @@ class UserController extends AbstractController
             'pushover_key',
             'pushover_device',
             'telegram_id',
+            'jabber',
             'email'
         );
         $clean = array();
@@ -274,13 +276,6 @@ class UserController extends AbstractController
             $user_validator->username($clean['user_name'], $user_id);
             $user_validator->email($clean['email']);
             $user_validator->level($clean['level']);
-            if (
-                count($this->db->select(PSM_DB_PREFIX . 'users', array('level' => PSM_USER_ADMIN))) == 1 &&
-                    $this->getUser()->getUserLevel() == PSM_USER_ADMIN
-            ) {
-                $this->addMessage(psm_get_lang('users', 'error_user_admin_cant_be_deleted'), 'warning');
-                $clean['level'] = PSM_USER_ADMIN;
-            }
 
             // always validate password for new users,
             // but only validate it for existing users when they change it.
@@ -302,6 +297,15 @@ class UserController extends AbstractController
         if ($user_id > 0) {
             // edit user
             unset($clean['password']); // password update is executed separately
+            $admins = $this->db->select(PSM_DB_PREFIX . 'users', array('level' => PSM_USER_ADMIN));
+            if (
+                (int) count($admins) === (int) 1 &&
+                (int) $admins[0]['user_id'] === (int) $user_id &&
+                (int) $clean['level'] === (int) PSM_USER_USER
+            ) {
+                $this->addMessage(psm_get_lang('users', 'error_user_admin_cant_be_deleted'), 'warning');
+                $clean['level'] = PSM_USER_ADMIN;
+            }
             $this->db->save(PSM_DB_PREFIX . 'users', $clean, array('user_id' => $user_id));
             $this->addMessage(psm_get_lang('users', 'updated'), 'success');
 
@@ -352,7 +356,11 @@ class UserController extends AbstractController
         try {
             $this->container->get('util.user.validator')->userId($id);
 
-            if (count($this->db->select(PSM_DB_PREFIX . 'users', array('level' => PSM_USER_ADMIN))) == 1) {
+            $admins = $this->db->select(PSM_DB_PREFIX . 'users', array('level' => PSM_USER_ADMIN));
+            if (
+                (int) count($admins) === (int) 1 &&
+                (int) $admins[0]['user_id'] === (int) $id
+            ) {
                 $this->addMessage(psm_get_lang('users', 'error_user_admin_cant_be_deleted'), 'error');
             } else {
                 $this->db->delete(PSM_DB_PREFIX . 'users', array('user_id' => $id,));
@@ -390,9 +398,10 @@ class UserController extends AbstractController
             'label_pushover_device' => psm_get_lang('users', 'pushover_device'),
             'label_pushover_device_description' => psm_get_lang('users', 'pushover_device_description'),
             'label_telegram' => psm_get_lang('users', 'telegram'),
-            'label_telegram_description' => psm_get_lang('users', 'telegram_description'),
             'label_telegram_id' => psm_get_lang('users', 'telegram_chat_id'),
             'label_telegram_id_description' => psm_get_lang('users', 'telegram_chat_id_description'),
+            'label_jabber' => psm_get_lang('users', 'jabber'),
+            'label_jabber_description' => psm_get_lang('users', 'jabber_description'),
             'label_email' => psm_get_lang('users', 'email'),
             'label_servers' => psm_get_lang('menu', 'server'),
             'label_save' => psm_get_lang('system', 'save'),

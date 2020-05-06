@@ -22,7 +22,7 @@
  * @author      Pepijn Over <pep@mailbox.org>
  * @copyright   Copyright (c) 2008-2017 Pepijn Over <pep@mailbox.org>
  * @license     http://www.gnu.org/licenses/gpl.txt GNU GPL v3
- * @version     Release: @package_version@
+ * @version     Release: v3.5.0
  * @link        http://www.phpservermonitor.org/
  **/
 
@@ -102,6 +102,7 @@ class ServerController extends AbstractServerController
             'sms' => 'icon-mobile',
             'pushover' => 'icon-pushover',
             'telegram' => 'icon-telegram',
+	        'jabber' => 'icon-jabber'
         );
 
         $servers = $this->getServers();
@@ -114,6 +115,9 @@ class ServerController extends AbstractServerController
                 $servers[$x]['ip'] = '<a href="' . $servers[$x]['ip'] .
                     '" target="_blank" rel="noopener">' . $ip . '</a>';
             }
+            if ($servers[$x]['type'] == 'ping') {
+                $servers[$x]['port'] = '';
+            }
             if (($servers[$x]['active'] == 'yes')) {
                 $servers[$x]['active_title'] = psm_get_lang('servers', 'monitoring');
             } else {
@@ -123,6 +127,12 @@ class ServerController extends AbstractServerController
             $servers[$x] = $this->formatServer($servers[$x]);
         }
         $tpl_data['servers'] = $servers;
+
+        $tpl_data['config']['email'] = psm_get_conf('email_status');
+        $tpl_data['config']['sms'] = psm_get_conf('sms_status');
+        $tpl_data['config']['pushover'] = psm_get_conf('pushover_status');
+        $tpl_data['config']['telegram'] = psm_get_conf('telegram_status');
+
         return $this->twig->render('module/server/server/list.tpl.html', $tpl_data);
     }
 
@@ -133,6 +143,12 @@ class ServerController extends AbstractServerController
     {
         $back_to = isset($_GET['back_to']) ? $_GET['back_to'] : '';
 
+        $modal = new \psm\Util\Module\Modal($this->twig, 'delete', \psm\Util\Module\Modal::MODAL_TYPE_DANGER);
+        $this->addModal($modal);
+        $modal->setTitle(psm_get_lang('servers', 'delete_title'));
+        $modal->setMessage(psm_get_lang('servers', 'delete_message'));
+        $modal->setOKButtonLabel(psm_get_lang('system', 'delete'));
+
         $tpl_data = $this->getLabels();
         $tpl_data['edit_server_id'] = $this->server_id;
         $tpl_data['url_save'] = psm_build_url(array(
@@ -140,6 +156,11 @@ class ServerController extends AbstractServerController
             'action' => 'save',
             'id' => $this->server_id,
             'back_to' => $back_to,
+        ));
+        $tpl_data['url_delete'] = psm_build_url(array(
+            'mod' => 'server',
+            'action' => 'delete',
+            'id' => $this->server_id,
         ));
 
         // depending on where the user came from, add the go back url:
@@ -208,16 +229,18 @@ class ServerController extends AbstractServerController
                 'edit_value_website_username' => $edit_server['website_username'],
                 'edit_value_website_password' => empty($edit_server['website_password']) ? '' :
                     sha1($edit_server['website_password']),
+                'edit_value_ssl_cert_expiry_days' => $edit_server['ssl_cert_expiry_days'],
                 'edit_type_selected_' . $edit_server['type'] => 'selected="selected"',
                 'edit_active_selected' => $edit_server['active'],
                 'edit_email_selected' => $edit_server['email'],
                 'edit_sms_selected' => $edit_server['sms'],
                 'edit_pushover_selected' => $edit_server['pushover'],
                 'edit_telegram_selected' => $edit_server['telegram'],
+	            'edit_jabber_selected' => $edit_server['jabber'],
             ));
         }
 
-        $notifications = array('email', 'sms', 'pushover', 'telegram');
+        $notifications = array('email', 'sms', 'pushover', 'telegram', 'jabber');
         foreach ($notifications as $notification) {
             if (psm_get_conf($notification . '_status') == 0) {
                 $tpl_data['warning_' . $notification] = true;
@@ -281,11 +304,13 @@ class ServerController extends AbstractServerController
             'header_name' => psm_POST('header_name', ''),
             'header_value' => psm_POST('header_value', ''),
             'warning_threshold' => intval(psm_POST('warning_threshold', 0)),
+            'ssl_cert_expiry_days' => intval(psm_POST('ssl_cert_expiry_days', 1)),
             'active' => in_array($_POST['active'], array('yes', 'no')) ? $_POST['active'] : 'no',
             'email' => in_array($_POST['email'], array('yes', 'no')) ? $_POST['email'] : 'no',
             'sms' => in_array($_POST['sms'], array('yes', 'no')) ? $_POST['sms'] : 'no',
             'pushover' => in_array($_POST['pushover'], array('yes', 'no')) ? $_POST['pushover'] : 'no',
             'telegram' => in_array($_POST['telegram'], array('yes', 'no')) ? $_POST['telegram'] : 'no',
+	        'jabber' => in_array($_POST['jabber'], array('yes', 'no')) ? $_POST['jabber'] : 'no',
         );
         // make sure websites start with http://
         if (
@@ -325,6 +350,7 @@ class ServerController extends AbstractServerController
             $server_validator->type($clean['type']);
             $server_validator->ip($clean['ip'], $clean['type']);
             $server_validator->warningThreshold($clean['warning_threshold']);
+            $server_validator->sslCertExpiryDays($clean['ssl_cert_expiry_days']);
         } catch (\InvalidArgumentException $ex) {
             $this->addMessage(psm_get_lang('servers', 'error_' . $ex->getMessage()), 'error');
             return $this->executeEdit();
@@ -553,11 +579,15 @@ class ServerController extends AbstractServerController
             'label_send_sms' => psm_get_lang('servers', 'send_sms'),
             'label_send_pushover' => psm_get_lang('servers', 'send_pushover'),
             'label_telegram' => psm_get_lang('servers', 'telegram'),
+	    'label_jabber' => psm_get_lang('servers', 'jabber'),
             'label_pushover' => psm_get_lang('servers', 'pushover'),
             'label_send_telegram' => psm_get_lang('servers', 'send_telegram'),
+	    'label_send_jabber' => psm_get_lang('servers', 'send_jabber'),
             'label_users' => psm_get_lang('servers', 'users'),
             'label_warning_threshold' => psm_get_lang('servers', 'warning_threshold'),
             'label_warning_threshold_description' => psm_get_lang('servers', 'warning_threshold_description'),
+            'label_ssl_cert_expiry_days' => psm_get_lang('servers', 'ssl_cert_expiry_days'),
+            'label_ssl_cert_expiry_days_description' => psm_get_lang('servers', 'ssl_cert_expiry_days_description'),
             'label_action' => psm_get_lang('system', 'action'),
             'label_save' => psm_get_lang('system', 'save'),
             'label_go_back' => psm_get_lang('system', 'go_back'),
