@@ -22,7 +22,7 @@
  * @author      Ward Pieters <ward@wardpieters.nl>
  * @copyright   Copyright (c) 2008-2017 Pepijn Over <pep@mailbox.org>
  * @license     http://www.gnu.org/licenses/gpl.txt GNU GPL v3
- * @version     Release: @package_version@
+ * @version     Release: v3.5.0
  * @link        http://www.phpservermonitor.org/
  * @since       phpservermon 3.1
  **/
@@ -58,7 +58,7 @@ class Smsglobal extends Core
         
         $recipients = join(',', $this->recipients);
         
-        $from = substr($this->originator, 0, 11); // Max 11 Characters
+        $from = substr($this->originator, 0, 15); // Max 15 Characters
         $message = substr(rawurlencode($message), 0, 153);
         
         $curl = curl_init();

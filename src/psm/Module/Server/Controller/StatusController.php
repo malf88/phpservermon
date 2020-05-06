@@ -23,7 +23,7 @@
  * @author      Pepijn Over <pep@mailbox.org>
  * @copyright   Copyright (c) 2008-2017 Pepijn Over <pep@mailbox.org>
  * @license     http://www.gnu.org/licenses/gpl.txt GNU GPL v3
- * @version     Release: @package_version@
+ * @version     Release: v3.5.0
  * @link        http://www.phpservermonitor.org/
  **/
 
@@ -99,6 +99,8 @@ class StatusController extends AbstractServerController
             if ($server['status'] == "off") {
                 $layout_data['servers_offline'][] = $server;
             } elseif ($server['warning_threshold_counter'] > 0) {
+                $layout_data['servers_warning'][] = $server;
+            } elseif ($server['ssl_cert_expired_time'] !== null && $server['ssl_cert_expiry_days'] > 0) {
                 $layout_data['servers_warning'][] = $server;
             } else {
                 $layout_data['servers_online'][] = $server;

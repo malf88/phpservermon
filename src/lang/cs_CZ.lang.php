@@ -23,7 +23,7 @@
  * @author      Pavel Laupe Dvorak <pavel@pavel-dvorak.cz>
  * @copyright   Copyright (c) 2008-2017 Pepijn Over <pep@mailbox.org>
  * @license     http://www.gnu.org/licenses/gpl.txt GNU GPL v3
- * @version     Release: @package_version@
+ * @version     Release: v3.5.0
  * @link        http://www.phpservermonitor.org/
  **/
 
@@ -95,7 +95,7 @@ $sm_lang = array(
         'email' => 'E-mail',
         'pushover' => 'Pushover',
         'pushover_description' => 'Pushover je služba umožňující jednoduše zasílat real-time upozornění.
- Více na <a href="https://pushover.net/">webu Pushover</a>',
+ Více na <a href="https://pushover.net/" target="_blank">webu Pushover</a>',
         'pushover_key' => 'Pushover Token',
         'pushover_device' => 'Pushover Zařízení',
         'pushover_device_description' => 'Název zařízení, na které má být zráva odeslána. Ponechte prázdné
@@ -227,7 +227,7 @@ $sm_lang = array(
         'sms_from' => 'Telefonní číslo odesilatele',
         'pushover_status' => 'Povolit zasílání Pushover zpráv',
         'pushover_description' => 'Pushover je služba umožňující jednoduše zasílat real-time upozornění.
- Více na <a href="https://pushover.net/">webu Pushover</a>',
+ Více na <a href="https://pushover.net/" target="_blank">webu Pushover</a>',
         'pushover_clone_app' => 'Klikněte pro vytvoření Pushover aplikace',
         'pushover_api_token' => 'Pushover App API Token',
         'pushover_api_token_description' => 'Pře použitím Pushoveru se musíte <a href="%1$s" target="_blank"

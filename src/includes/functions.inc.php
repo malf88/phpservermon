@@ -22,7 +22,7 @@
  * @author      Pepijn Over <pep@mailbox.org>
  * @copyright   Copyright (c) 2008-2017 Pepijn Over <pep@mailbox.org>
  * @license     http://www.gnu.org/licenses/gpl.txt GNU GPL v3
- * @version     Release: @package_version@
+ * @version     Release: v3.5.0
  * @link        http://www.phpservermonitor.org/
  **/
 
@@ -390,7 +390,7 @@ namespace {
  * @param string|bool $website_password Password website
  * @param string|null $request_method Request method like GET, POST etc.
  * @param string|null $post_field POST data
- * @return string cURL result
+ * @return array cURL result
  */
     function psm_curl_get(
         $href,
@@ -418,6 +418,7 @@ namespace {
         curl_setopt($ch, CURLOPT_CONNECTTIMEOUT, $timeout);
         curl_setopt($ch, CURLOPT_TIMEOUT, $timeout);
         curl_setopt($ch, CURLOPT_ENCODING, '');
+        curl_setopt($ch, CURLOPT_CERTINFO, 1);
     
         if (!empty($request_method)) {
             curl_setopt($ch, CURLOPT_CUSTOMREQUEST, $request_method);
@@ -455,7 +456,9 @@ namespace {
             PSM_VERSION . '; +https://github.com/phpservermon/phpservermon)');
         }
 
-        $result = curl_exec($ch);
+        $result['exec'] = curl_exec($ch);
+        $result['info'] = curl_getinfo($ch);
+
         curl_close($ch);
     
         if (defined('PSM_DEBUG') && PSM_DEBUG === true && psm_is_cli()) {
@@ -552,22 +555,31 @@ namespace {
             // update last check date
             psm_update_conf('last_update_check', time());
             $latest = psm_curl_get(PSM_UPDATE_URL);
-            // extract latest version from Github.
-            preg_match('/"tag_name":"[v](([\d][.][\d][.][\d])(-?\w*))"/', $latest, $latest);
-            // add latest version to database
-            if (!empty($latest) && strlen($latest[2]) < 15) {
-                psm_update_conf('version_update_check', $latest[2]);
+            if ($latest['info'] === false || (int)$latest['info']['http_code'] >= 300) {
+                // error
+                return false;
             }
+            // extract latest version from Github.
+            $githubInfo = json_decode($latest['exec']);
+            if (property_exists($githubInfo, 'tag_name') === false) {
+                // version not found
+                return false;
+            }
+            $tagName = $githubInfo->tag_name;
+            $latestVersion = str_replace('v', '', $tagName);
+            // check from old version ... maybe has reason but I don't think so ...
+            if (empty($latestVersion) === true || strlen($latestVersion) >= 15) {
+                // weird version
+                return false;
+            }
+            // add latest version to database
+            psm_update_conf('version_update_check', $latestVersion);
         } else {
-            $latest[2] = psm_get_conf('version_update_check');
+            $latestVersion = psm_get_conf('version_update_check');
         }
 
-        if (!empty($latest)) {
-            $current = psm_get_conf('version');
-            return version_compare($latest[2], $current, '>');
-        } else {
-            return false;
-        }
+        $current = psm_get_conf('version');
+        return version_compare($latestVersion, $current, '>');
     }
 
 /**
@@ -583,10 +595,7 @@ namespace {
         $phpmailer = new \PHPMailer\PHPMailer\PHPMailer();
         $phpmailer->Encoding = "base64";
         $phpmailer->CharSet = 'UTF-8';
-        if (!defined('PSM_SMTP_DEBUG')) {
-            define('PSM_SMTP_DEBUG', false);
-        }
-        $phpmailer->SMTPDebug = PSM_SMTP_DEBUG;
+        $phpmailer->SMTPDebug = 0;
 
         if (psm_get_conf('email_smtp') == '1') {
             $phpmailer->IsSMTP();
@@ -595,7 +604,10 @@ namespace {
             $phpmailer->SMTPSecure = psm_get_conf('email_smtp_security');
 
             $smtp_user = psm_get_conf('email_smtp_username');
-            $smtp_pass = psm_get_conf('email_smtp_password');
+            $smtp_pass = psm_password_decrypt(
+                psm_get_conf('password_encrypt_key'),
+                psm_get_conf('email_smtp_password')
+            );
 
             if ($smtp_user != '' && $smtp_pass != '') {
                 $phpmailer->SMTPAuth = true;
@@ -639,6 +651,60 @@ namespace {
         $telegram->setToken(psm_get_conf('telegram_api_token'));
 
         return $telegram;
+    }
+
+    /**
+     * Send message via XMPP.
+     *
+     * @param string      $host
+     * @param string      $username
+     * @param string      $password
+     * @param array       $receivers
+     * @param string      $message
+     * @param int|null    $port
+     * @param string|null $domain
+     */
+    function psm_jabber_send_message($host, $username, $password, $receivers, $message, $port = null, $domain = null)
+    {
+        $options = [
+            'jid' => $username, // incl. gmail.com
+            'pass' => $password,
+            'domain' => $domain, // gmail.com or null
+            'host' => $host, // talk.google.com
+            'port' => $port, // talk.google.com needs to have 5223 ... 5222 - CN problem - gmail.com vs talk.google.com
+            'log_path' => __DIR__ . '/../../logs/jaxl.log', // own log
+
+            // force tls
+            'force_tls' => PSM_JABBER_FORCE_TLS,
+            // (required) perform X-OAUTH2
+            'auth_type' => PSM_JABBER_AUTH_TYPE, //'X-OAUTH2', // auth failure with this option :( so just PLAIN ...
+
+            'log_level' => PSM_JABBER_DEBUG_LEVEL
+        ];
+
+        try {
+            $client = new JAXL($options);
+
+            // Add Callbacks
+            $client->add_cb('on_auth_success', function () use ($client, $receivers, $message) {
+                JAXLLogger::info('got on_auth_success cb');
+                foreach ($receivers as $receiver) {
+	                $client->send_chat_msg($receiver, $message);
+                }
+                $client->send_end_stream();
+            });
+            $client->add_cb('on_auth_failure', function ($reason) use ($client) {
+                $client->send_end_stream();
+                JAXLLogger::info('got on_auth_failure cb with reason: ' . $reason);
+            });
+            $client->add_cb('on_disconnect', function () use ($client) {
+                JAXLLogger::info('got on_disconnect cb');
+            });
+
+            $client->start();
+        } catch (Exception $ex) {
+            JAXLLogger::error('Exception: ' . $ex->getMessage());
+        }
     }
 
 /**
@@ -896,15 +962,12 @@ namespace {
         $cipher = "AES-256-CBC";
         $ivlen = openssl_cipher_iv_length($cipher);
         $iv = substr($data, 0, $ivlen);
-        $decrypted = rtrim(
-            openssl_decrypt(
-                base64_encode(substr($data, $ivlen)),
-                $cipher,
-                hash('sha256', $key, true),
-                OPENSSL_ZERO_PADDING,
-                $iv
-            ),
-            "\0"
+        $decrypted = openssl_decrypt(
+            substr($data, $ivlen),
+            $cipher,
+            hash('sha256', $key, true),
+            OPENSSL_RAW_DATA,
+            $iv
         );
     
         return $decrypted;
@@ -956,7 +1019,7 @@ namespace {
             if (!empty($this->token) && !empty($this->user) && !empty($this->message)) {
                 $this->url = 'https://api.telegram.org/bot' . urlencode($this->token) .
                 '/sendMessage?chat_id=' . urlencode($this->user) . '&text=' .
-                urlencode($this->message) . '&parse_mode=HTML';
+                urlencode($this->message) . '&parse_mode=HTML&disable_web_page_preview=True';
             }
             return $this->sendurl();
         }

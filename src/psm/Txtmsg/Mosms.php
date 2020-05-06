@@ -22,7 +22,7 @@
  * @author      Ward Pieters <ward@wardpieters.nl>
  * @copyright   Copyright (c) 2008-2017 Pepijn Over <pep@mailbox.org>
  * @license     http://www.gnu.org/licenses/gpl.txt GNU GPL v3
- * @version     Release: @package_version@
+ * @version     Release: v3.5.0
  * @link        http://www.phpservermonitor.org/
  * @since       phpservermon 2.1
  **/
@@ -63,7 +63,7 @@ class Mosms extends Core
                 array(
                         "username" => $this->username,
                         "password" => $this->password,
-                        "customsender" => substr($this->originator, 0, 11),
+                        "customsender" => substr($this->originator, 0, 15),
                         "nr" => $recipient,
                         "type" => "text",
                         "data" => $message,

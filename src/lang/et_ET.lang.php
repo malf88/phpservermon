@@ -22,7 +22,7 @@
  * @author      Richard A.
  * @copyright   Copyright (c) 2008-2017 Pepijn Over <pep@mailbox.org>
  * @license     http://www.gnu.org/licenses/gpl.txt GNU GPL v3
- * @version     Release: @package_version@
+ * @version     Release: v3.5.0
  * @link        http://www.phpservermonitor.org/
  **/
 
@@ -93,7 +93,8 @@ $sm_lang = array(
         'email' => 'Email',
         'pushover' => 'Pushover',
         'pushover_description' => 'Pushover on teenus, mis teeb reaalaja teavitused imelihtsaks. Vaata <a
- href="https://pushover.net/">nende kodulehte</a> rohkema info jaoks.',
+ href="https://pushover.net/" target="_blank">nende kodulehte</a> rohkema info
+ jaoks.',
         'pushover_key' => 'Pushoveri Võti',
         'pushover_device' => 'Pushoveri Seade',
         'pushover_device_description' => 'Seadme nimi, kuhu teavitus saata. Jäta tühjaks, et saata igale seadmele.',
@@ -207,7 +208,8 @@ $sm_lang = array(
         'sms_from' => 'Saatja telefoni number',
         'pushover_status' => 'Luba Pushoveri sõnumite saatmine',
         'pushover_description' => 'Pushover on teenus, mis teeb reaalaja teavitused imelihtsaks. Vaata <a
- href="https://pushover.net/">nende kodulehte</a> rohkema info jaoks.',
+ href="https://pushover.net/" target="_blank">nende kodulehte</a> rohkema info
+ jaoks.',
         'pushover_clone_app' => 'Kliki siia, et teha oma Pushover äpp',
         'pushover_api_token' => 'Pushover Äppi API Žetoon',
         'pushover_api_token_description' => 'Enne, kui saad Pushoverida pead sa <a href="%1$s" target="_blank"

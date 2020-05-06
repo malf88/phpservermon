@@ -22,7 +22,7 @@
  * @author      Pepijn Over <pep@mailbox.org>
  * @copyright   Copyright (c) 2008-2017 Pepijn Over <pep@mailbox.org>
  * @license     http://www.gnu.org/licenses/gpl.txt GNU GPL v3
- * @version     Release: @package_version@
+ * @version     Release: v3.5.0
  * @link        http://www.phpservermonitor.org/
  * @since       phpservermon 2.1.0
  **/
@@ -75,11 +75,11 @@ class InstallController extends AbstractController
 
         $phpv = phpversion();
         if (
-            version_compare($phpv, '5.5.9', '<') ||
+            version_compare($phpv, '5.6.0', '<') ||
             (version_compare($phpv, '7.0.8', '<') && version_compare($phpv, '7.0.0', '>='))
         ) {
             $errors++;
-            $this->addMessage('PHP 5.5.9+ or 7.0.8+ is required to run PHP Server Monitor. You\'re using ' .
+            $this->addMessage('PHP 5.6.0+ or 7.0.8+ is required to run PHP Server Monitor. You\'re using ' .
                 $phpv . '.', 'error');
         } else {
             $this->addMessage('PHP version: ' . $phpv, 'success');
@@ -257,6 +257,7 @@ class InstallController extends AbstractController
             'pushover_key' => '',
             'pushover_device' => '',
             'telegram_id' => '',
+	        'jabber' => ''
         );
 
         $validator = $this->container->get('util.user.validator');
